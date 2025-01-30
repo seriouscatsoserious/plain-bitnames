@@ -42,15 +42,10 @@ jobs:
       - name: Build
         run: cargo build --release
 
-      - name: 'Set environment variables: version number and output filenames'
+      - name: 'Set environment variables: output filenames'
         run: |
-          BITNAMES_APP_VERSION=$(cargo metadata --format-version 1 | \
-            jq -er '.packages | map(select(.name == "plain_bitnames_app") | .version) | .[0]')
-          BITNAMES_APP_FILENAME="bitnames-${BITNAMES_APP_VERSION}-x86_64-unknown-linux-gnu"
-          BITNAMES_CLI_FILENAME="bitnames-cli-${BITNAMES_APP_VERSION}-x86_64-unknown-linux-gnu"
-          echo "BITNAMES_APP_VERSION=$BITNAMES_APP_VERSION" >> "$GITHUB_ENV"
-          echo "BITNAMES_APP_FILENAME=$BITNAMES_APP_FILENAME" >> "$GITHUB_ENV"
-          echo "BITNAMES_CLI_FILENAME=$BITNAMES_CLI_FILENAME" >> "$GITHUB_ENV"
+          echo "BITNAMES_APP_FILENAME=bitnames-x86_64-unknown-linux-gnu" >> "$GITHUB_ENV"
+          echo "BITNAMES_CLI_FILENAME=bitnames-cli-x86_64-unknown-linux-gnu" >> "$GITHUB_ENV"
 
       - name: 'Set filenames for release binaries'
         run: |
@@ -100,15 +95,10 @@ jobs:
       - name: Build
         run: cargo build --release
 
-      - name: 'Set environment variables: version number and output filenames'
+      - name: 'Set environment variables: output filenames'
         run: |
-          BITNAMES_APP_VERSION=$(cargo metadata --format-version 1 | \
-            jq -er '.packages | map(select(.name == "plain_bitnames_app") | .version) | .[0]')
-          BITNAMES_APP_FILENAME="bitnames-${BITNAMES_APP_VERSION}-x86_64-apple-darwin"
-          BITNAMES_CLI_FILENAME="bitnames-cli-${BITNAMES_APP_VERSION}-x86_64-apple-darwin"
-          echo "BITNAMES_APP_VERSION=$BITNAMES_APP_VERSION" >> "$GITHUB_ENV"
-          echo "BITNAMES_APP_FILENAME=$BITNAMES_APP_FILENAME" >> "$GITHUB_ENV"
-          echo "BITNAMES_CLI_FILENAME=$BITNAMES_CLI_FILENAME" >> "$GITHUB_ENV"
+          echo "BITNAMES_APP_FILENAME=bitnames-x86_64-apple-darwin" >> "$GITHUB_ENV"
+          echo "BITNAMES_CLI_FILENAME=bitnames-cli-x86_64-apple-darwin" >> "$GITHUB_ENV"
 
       - name: 'set filenames for release binaries'
         run: |
@@ -165,15 +155,10 @@ jobs:
         env:
           RUSTFLAGS: "-C linker=/usr/bin/x86_64-w64-mingw32-gcc"
 
-      - name: 'Set environment variables: version number and output filenames'
+      - name: 'Set environment variables: output filenames'
         run: |
-          BITNAMES_APP_VERSION=$(cargo metadata --format-version 1 | \
-            jq -er '.packages | map(select(.name == "plain_bitnames_app") | .version) | .[0]')
-          BITNAMES_APP_FILENAME="bitnames-${BITNAMES_APP_VERSION}-x86_64-pc-windows-gnu.exe"
-          BITNAMES_CLI_FILENAME="bitnames-cli-${BITNAMES_APP_VERSION}-x86_64-pc-windows-gnu.exe"
-          echo "BITNAMES_APP_VERSION=$BITNAMES_APP_VERSION" >> "$GITHUB_ENV"
-          echo "BITNAMES_APP_FILENAME=$BITNAMES_APP_FILENAME" >> "$GITHUB_ENV"
-          echo "BITNAMES_CLI_FILENAME=$BITNAMES_CLI_FILENAME" >> "$GITHUB_ENV"
+          echo "BITNAMES_APP_FILENAME=bitnames-x86_64-pc-windows-gnu.exe" >> "$GITHUB_ENV"
+          echo "BITNAMES_CLI_FILENAME=bitnames-cli-x86_64-pc-windows-gnu.exe" >> "$GITHUB_ENV"
 
       - name: 'set filenames for release binaries'
         run: |
@@ -213,22 +198,15 @@ jobs:
       
       - name: Create zip files for releases.drivechain.info
         run: |
-          shopt -s extglob
-          mv bitnames-+([0-9]).+([0-9]).+([0-9])-x86_64-apple-darwin bitnames-latest-x86_64-apple-darwin
-          mv bitnames-cli-+([0-9]).+([0-9]).+([0-9])-x86_64-apple-darwin bitnames-cli-latest-x86_64-apple-darwin
           zip L2-S2-BitNames-latest-x86_64-apple-darwin.zip \
-            bitnames-latest-x86_64-apple-darwin \
-            bitnames-cli-latest-x86_64-apple-darwin
-          mv bitnames-+([0-9]).+([0-9]).+([0-9])-x86_64-pc-windows-gnu.exe bitnames-latest-x86_64-pc-windows-gnu.exe
-          mv bitnames-cli-+([0-9]).+([0-9]).+([0-9])-x86_64-pc-windows-gnu.exe bitnames-cli-latest-x86_64-pc-windows-gnu.exe
+            bitnames-x86_64-apple-darwin \
+            bitnames-cli-x86_64-apple-darwin
           zip L2-S2-BitNames-latest-x86_64-pc-windows-gnu.zip \
-            bitnames-latest-x86_64-pc-windows-gnu.exe \
-            bitnames-cli-latest-x86_64-pc-windows-gnu.exe
-          mv bitnames-+([0-9]).+([0-9]).+([0-9])-x86_64-unknown-linux-gnu bitnames-latest-x86_64-unknown-linux-gnu
-          mv bitnames-cli-+([0-9]).+([0-9]).+([0-9])-x86_64-unknown-linux-gnu bitnames-cli-latest-x86_64-unknown-linux-gnu
+            bitnames-x86_64-pc-windows-gnu.exe \
+            bitnames-cli-x86_64-pc-windows-gnu.exe
           zip L2-S2-BitNames-latest-x86_64-unknown-linux-gnu.zip \
-            bitnames-latest-x86_64-unknown-linux-gnu \
-            bitnames-cli-latest-x86_64-unknown-linux-gnu
+            bitnames-x86_64-unknown-linux-gnu \
+            bitnames-cli-x86_64-unknown-linux-gnu
 
       - name: Upload release assets to releases.drivechain.info
         uses: cross-the-world/ssh-scp-ssh-pipelines@latest
